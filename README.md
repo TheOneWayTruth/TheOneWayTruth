@@ -1,0 +1,3 @@
+- 👋 Hi, I’m @TheOneWayTruth
+- 👀 I’m interested in Javascript and Ai
+- 🌱 I’m currently learning Vue.js
