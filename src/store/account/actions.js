@@ -8,12 +8,19 @@ export default
 
             return fb.usersCollection.doc(user.uid).get().then(doc => {
                 if (doc.exists) {
-                    doc.ref.delete().then(() => {
-                        user.delete()
-                        commit("setUserProfile", {});
-                        router.push('/login')
+                    fb.roomCollection.where("host.uid", "==", user.uid).get().then((rooms) => {
+                        var promises = [];
+                        rooms.forEach(room => {
+                            promises.push(fb.roomCollection.doc(room.id).delete())
+                        });
+                        Promise.all(promises).then(() => {
+                            doc.ref.delete().then(() => {
+                                user.delete()
+                                commit("setUserProfile", {});
+                                router.push('/login')
+                            })
+                        })
                     })
-
                 }
             })
         },

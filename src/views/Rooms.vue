@@ -24,15 +24,13 @@ export default {
   },
   created() {
     roomCollection.orderBy("id", "desc").onSnapshot((doc) => {
-      if (!doc.empty) {
-        let roomArray = [];
-        doc.forEach((doc) => {
-          let post = doc.data();
-          post.id = doc.id;
-          roomArray.push(post);
-        });
-        this.$store.commit("games/setRooms", roomArray);
-      }
+      let roomArray = [];
+      doc.forEach((doc) => {
+        let post = doc.data();
+        post.id = doc.id;
+        roomArray.push(post);
+      });
+      this.$store.commit("games/setRooms", roomArray);
     });
   },
   methods: {

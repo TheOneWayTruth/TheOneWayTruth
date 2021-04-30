@@ -1,18 +1,25 @@
 <template>
   <div class="fix" v-if="room">
     <h1>{{ room.name }}</h1>
-    <div v-if="room.host">
-      <span>Host: </span>
-      <span>{{ room.host.name }}</span>
+    <div>
+      <h4>Players</h4>
+      <div :key="member.uid" v-for="member in members">
+        <span>{{ member.name }}</span>
+        <span v-if="room.host.uid == member.uid"> (host)</span>
+      </div>
     </div>
-    <button v-if="admin" @click="deleteRoom" class="btn">Delete</button>
-    <button v-else @click="leaveRoom" class="btn">Leave</button>
+    <div v-if="admin">
+      <button @click="deleteRoom" class="btn danger">Delete</button>
+    </div>
+    <div v-else>
+      <button @click="leaveRoom" class="btn">Leave</button>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { roomCollection } from "../firebase";
+import { roomCollection, usersCollection } from "../firebase";
 
 export default {
   name: "Game",
@@ -20,7 +27,7 @@ export default {
     id: [String, Number],
   },
   computed: {
-    ...mapState("games", ["room", "admin"]),
+    ...mapState("games", ["room", "admin", "members"]),
     ...mapState("account", ["user"]),
   },
   created() {
@@ -30,8 +37,21 @@ export default {
         el.id = doc.id;
         this.$store.dispatch("games/checkAdmin", el);
         this.$store.commit("games/setRoom", el);
+      } else {
+        this.$router.push("/");
       }
     });
+    usersCollection
+      .where("room.id", "==", this.id.toString())
+      .onSnapshot((doc) => {
+        let members = [];
+        doc.forEach((doc) => {
+          let user = doc.data();
+          user.uid = doc.id;
+          members.push(user);
+        });
+        this.$store.commit("games/setMembers", members);
+      });
   },
   methods: {
     leaveRoom() {

@@ -6,8 +6,12 @@ export default {
         rooms: [],
         room: {},
         admin: false,
+        members: []
     },
     mutations: {
+        setMembers(state, val) {
+            state.members = val
+        },
         setRooms(state, val) {
             state.rooms = val
         },

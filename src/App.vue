@@ -118,6 +118,13 @@ a {
   }
 }
 
+.danger {
+  background: crimson;
+  &:hover {
+    background: red;
+  }
+}
+
 section {
   display: flex;
   max-width: 1200px;
