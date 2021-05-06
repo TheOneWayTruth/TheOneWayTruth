@@ -20,20 +20,21 @@ export default
                 dispatch("checkKill", room)
             })
         },
-        checkKill({ dispatch }, room) {
-            let mehrzahl = Math.ceil(Object.keys(room.roles).length);
+        checkKill({ dispatch, rootState }, room) {
+            let mehrzahl = Math.ceil(Object.keys(room.roles).length / 2);
             for (let role in room.roles) {
                 if (room.roles[role].accuse.length >= mehrzahl) {
-                    dispatch("kill", { room: room, user: role })
+                    if (room.roles[role].role == "Spion") {
+                        let message = rootState.games.members.find(x => x.uid == role).name + " wurde als Spion entlarft!";
+                        dispatch("win", { room: room, message: message })
+                    } else {
+                        let message = rootState.games.members.find(x => x.uid == role).name + " wurde fälschlich als Spion beschuldigt!";
+                        dispatch("win", { room: room, message: message })
+                    }
                 }
             }
         },
-        kill({ dispatch }, { room, user }) {
-            room.roles[user].dead = true;
-            return fb.roomCollection.doc(room.id).update(room, { merge: true }).then(() => {
-                dispatch("checkWin", { room: room })
-            })
-        },
+
         checkWin({ dispatch, rootState }, { room }) {
             for (let player in room.roles) {
                 if (room.roles[player].role == "Spion") {
@@ -52,7 +53,7 @@ export default
                 let message = user.name + " hat den Ort " + room.ort + " erraten!";
                 dispatch("win", { room: room, message: message })
             } else {
-                let message = user.name + " hat den falschen Ort gerraten! (" + room.ort + ")";
+                let message = user.name + " hat den falschen Ort(" + ort + ") gerraten! (Richtig wäre" + room.ort + ")";
                 dispatch("win", { room: room, message: message })
             }
         },
@@ -69,7 +70,7 @@ export default
 
             room.ort = place;
             for (let member of rootState.games.members) {
-                roles[member.uid] = { accuse: [] };
+                roles[member.uid] = { accuse: [], role: "kein Spion" };
                 if (member.uid == spy) {
                     roles[member.uid] = { role: "Spion", accuse: [] };
                 }

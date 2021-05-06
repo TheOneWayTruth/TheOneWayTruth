@@ -2,7 +2,7 @@
   <div class="fix" v-if="room">
     <h1 class="change">{{ room.name }}</h1>
     <h2 v-if="room.win && !room.start">{{ room.win }}</h2>
-    <div v-if="room.host">
+    <div>
       <h4>Players</h4>
       <p :key="member.uid" v-for="member in members">
         <span>{{ member.name }}</span>
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     checkOrt(ort) {
-      if (this.room.roles[this.user.uid]) {
+      if (this.room.roles[this.user.uid] == "Spion") {
         this.$store.dispatch("games/" + this.room.game + "/checkOrt", {
           room: this.room,
           ort: ort,
