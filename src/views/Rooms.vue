@@ -39,6 +39,7 @@ export default {
       room.id = (+new Date()).toString();
       room.name = this.user.name + "'s Room";
       room.host = this.user;
+      room.game = "schaefchen";
       this.$store.dispatch("games/createRoom", { room: room, user: this.user });
     },
     joinRoom(room) {

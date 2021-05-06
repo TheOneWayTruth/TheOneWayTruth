@@ -52,6 +52,7 @@ h4,
 h5,
 p {
   margin: 0 0 0.5rem;
+  cursor: default;
 }
 
 h1 {
@@ -134,6 +135,15 @@ section {
   }
 }
 
+.flex {
+  display: flex;
+}
+
+.flexy {
+  display: flex;
+  flex-direction: column;
+}
+
 .inline {
   margin: 0;
   padding: 0;
@@ -141,6 +151,13 @@ section {
 
   li {
     display: inline-block;
+  }
+}
+
+.change {
+  cursor: text;
+  &::after {
+    content: "✏️";
   }
 }
 

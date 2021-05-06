@@ -1,6 +1,5 @@
-import * as fb from '../../firebase'
-import router from '../../router/index'
-
+import * as fb from '@/firebase'
+import router from '@/router/index'
 
 export default
     {
@@ -13,8 +12,16 @@ export default
                 dispatch("joinRoom", { room: room, user: user })
             })
         },
+        changeGame({ dispatch }, { room: room, game: game }) {
+            fb.roomCollection.doc(room.id).set({ game: game }, { merge: true })
+        },
+        startGame({ dispatch }, { room: room, roles: roles }) {
+            fb.roomCollection.doc(room.id).set({ start: true, roles: roles, ort: room.ort }, { merge: true })
+        },
+        stopGame({ dispatch }, { room: room }) {
+            fb.roomCollection.doc(room.id).set({ start: false, roles: {} }, { merge: true })
+        },
         joinRoom({ dispatch }, { room: room, user: user }) {
-
             fb.usersCollection.doc(user.uid).set({ room: room }, { merge: true }).then(() => {
                 dispatch("account/updateUser", user, { root: true })
                 router.push({ name: 'GameId', params: { id: room.id } })

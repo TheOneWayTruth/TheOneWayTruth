@@ -1,8 +1,14 @@
-import * as fb from '../../firebase'
-import router from '../../router/index'
+import * as fb from '@/firebase'
+import router from '@/router/index'
 
 export default
     {
+        changeUsername({ dispatch }, username) {
+            const user = fb.auth.currentUser
+            return fb.usersCollection.doc(user.uid).update({ name: username }, { merge: true }).then(() => {
+                dispatch('updateUser', user)
+            })
+        },
         deleteAccount({ commit }) {
             const user = fb.auth.currentUser
 

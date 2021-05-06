@@ -1,4 +1,5 @@
 import actions from './actions';
+import spyfall from "./spyfall/module.js";
 
 export default {
     namespaced: true,
@@ -23,4 +24,8 @@ export default {
         },
     },
     actions,
+    modules: {
+        spyfall: spyfall,
+    }
 }
+
