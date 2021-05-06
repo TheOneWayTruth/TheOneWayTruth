@@ -11,7 +11,6 @@ export default
         },
         deleteAccount({ commit }) {
             const user = fb.auth.currentUser
-
             return fb.usersCollection.doc(user.uid).get().then(doc => {
                 if (doc.exists) {
                     fb.roomCollection.where("host.uid", "==", user.uid).get().then((rooms) => {
@@ -33,6 +32,15 @@ export default
         login({ dispatch }, form) {
             return fb.auth.signInWithEmailAndPassword(form.email, form.password).then((user) => {
                 dispatch('updateUser', user.user)
+            })
+        },
+        gastLogin({ dispatch }) {
+            return fb.auth.signInAnonymously().then((user) => {
+                fb.usersCollection.doc(user.user.uid).set({
+                    name: +new Date()
+                }).then(() => {
+                    dispatch('updateUser', user.user)
+                })
             })
         },
         facebookLogin({ dispatch }) {
@@ -57,8 +65,7 @@ export default
         signup({ dispatch }, form) {
             return fb.auth.createUserWithEmailAndPassword(form.email, form.password).then(user => {
                 fb.usersCollection.doc(user.user.uid).set({
-                    name: form.name,
-                    username: form.username
+                    name: form.name
                 }).then(() => {
                     dispatch('updateUser', user.user)
                 })

@@ -1,5 +1,6 @@
 import actions from './actions';
 import spyfall from "./spyfall/module.js";
+import schaefchen from "./schaefchen/module.js";
 
 export default {
     namespaced: true,
@@ -26,6 +27,7 @@ export default {
     actions,
     modules: {
         spyfall: spyfall,
+        schaefchen: schaefchen,
     }
 }
 

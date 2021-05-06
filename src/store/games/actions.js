@@ -8,7 +8,7 @@ export default
             commit("setAdmin", room.host.uid == user.uid);
         },
         createRoom({ dispatch }, { room: room, user: user }) {
-            fb.roomCollection.doc(room.id).set(room).then(() => {
+            return fb.roomCollection.doc(room.id).set(room).then(() => {
                 dispatch("joinRoom", { room: room, user: user })
             })
         },
@@ -19,7 +19,7 @@ export default
             fb.roomCollection.doc(room.id).set({ start: true, roles: roles, ort: room.ort }, { merge: true })
         },
         stopGame({ dispatch }, { room: room }) {
-            fb.roomCollection.doc(room.id).set({ start: false, roles: {} }, { merge: true })
+            fb.roomCollection.doc(room.id).set({ win: null, start: false, roles: {} }, { merge: true })
         },
         joinRoom({ dispatch }, { room: room, user: user }) {
             fb.usersCollection.doc(user.uid).set({ room: room }, { merge: true }).then(() => {

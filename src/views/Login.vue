@@ -47,28 +47,19 @@
           <div>
             <button class="btn" @click="googleLogin">Google</button>
             <button class="btn" @click="facebookLogin">Facebook</button>
+            <button class="btn" @click="gastLogin">Gast</button>
           </div>
         </form>
         <form v-else @submit.prevent>
           <h1>Get Started</h1>
           <div>
-            <label for="name">Name</label>
+            <label for="name">Nutzername</label>
             <input
               v-model.trim="signupForm.name"
               type="text"
               placeholder="Vorname Nachname"
               id="name"
               autocomplete="name"
-            />
-          </div>
-          <div>
-            <label for="username">Username</label>
-            <input
-              v-model.trim="signupForm.username"
-              type="text"
-              placeholder="Nutzername"
-              id="username"
-              autocomplete="username"
             />
           </div>
           <div>
@@ -114,7 +105,6 @@ export default {
       },
       signupForm: {
         name: "",
-        username: "",
         email: "",
         password: "",
       },
@@ -123,6 +113,9 @@ export default {
     };
   },
   methods: {
+    gastLogin() {
+      this.$store.dispatch("account/gastLogin");
+    },
     googleLogin() {
       this.$store.dispatch("account/googleLogin");
     },
@@ -146,7 +139,6 @@ export default {
         email: this.signupForm.email,
         password: this.signupForm.password,
         name: this.signupForm.name,
-        username: this.signupForm.username,
       });
     },
   },
@@ -226,7 +218,9 @@ $dark: #555;
         margin-bottom: 0.5rem;
       }
     }
-
+    .btn {
+      margin: 0.5rem;
+    }
     .password-reset {
       h1 {
         margin-bottom: 1rem;

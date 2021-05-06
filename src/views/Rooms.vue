@@ -1,13 +1,16 @@
 <template>
   <div class="fix">
-    <div
+    <button
       @click="joinRoom(room)"
       class="kiste"
       :key="room.id"
       v-for="room in rooms"
+      :disabled="room.start"
     >
-      {{ room.name }}
-    </div>
+      <span>{{ room.name }}</span>
+      <span v-show="room.start"> (bereits im Spiel)</span>
+      <span v-show="room.members"> {{ room.members }}</span>
+    </button>
     <button class="btn" @click="createRoom">create Room</button>
   </div>
 </template>
@@ -33,6 +36,18 @@ export default {
       this.$store.commit("games/setRooms", roomArray);
     });
   },
+  mounted() {
+    /*    let timer = null;
+    timer = setInterval(() => {
+      if (this.user.room) {
+        this.$router.push({
+          name: "GameId",
+          params: { id: this.user.room.id },
+        });
+        clearInterval(timer);
+      }
+    }, 500); */
+  },
   methods: {
     createRoom() {
       let room = {};
@@ -56,10 +71,11 @@ export default {
   border: 1px solid black;
   margin: 10px 0px;
   padding: 10px;
-  background: lightgrey;
+  background: lightcyan;
   cursor: pointer;
   &:hover {
-    background: grey;
+    background: rgb(174, 255, 255);
   }
+  width: 100%;
 }
 </style>

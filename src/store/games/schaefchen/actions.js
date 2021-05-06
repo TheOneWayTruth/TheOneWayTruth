@@ -1,33 +1,20 @@
-
 import * as fb from '@/firebase'
 import places from "@/assets/places.json";
 
 
 export default
     {
-        accusePlayer({ dispatch, rootState }, { room: room, user: user }) {
+        accusePlayer({ dispatch }, { room: room, user: user }) {
             const player = fb.auth.currentUser
             if (room.roles[user].accuse == undefined) {
                 room.roles[user].accuse = []
             }
-
-
             let index = room.roles[user].accuse.indexOf(player.uid);
             if (index == -1) {
-
-
-                for (let p of rootState.games.members.filter(x => x.room.uid == room.uid)) {
-                    let idx = room.roles[p.uid].accuse.indexOf(player.uid)
-                    if (idx != -1) {
-                        room.roles[p.uid].accuse.splice(idx, 1);
-                    }
-                }
-
                 room.roles[user].accuse.push(player.uid);
             } else {
                 room.roles[user].accuse.splice(index, 1);
             }
-
             return fb.roomCollection.doc(room.id).update(room, { merge: true }).then(() => {
                 dispatch("checkKill", room)
             })
@@ -40,9 +27,7 @@ export default
                         let message = rootState.games.members.find(x => x.uid == role).name + " wurde als Spion entlarft!";
                         dispatch("win", { room: room, message: message })
                     } else {
-                        let uid = Object.entries(room.roles).find(x => x[1].role == "Spion");
-                        let spy = rootState.games.members.find(x => x.uid == uid[0]).name
-                        let message = rootState.games.members.find(x => x.uid == role).name + " wurde fälschlich als Spion beschuldigt! (" + spy + " war der Spion)";
+                        let message = rootState.games.members.find(x => x.uid == role).name + " wurde fälschlich als Spion beschuldigt!";
                         dispatch("win", { room: room, message: message })
                     }
                 }
@@ -66,7 +51,7 @@ export default
                 let message = user.name + " hat den Ort " + room.ort + " erraten!";
                 dispatch("win", { room: room, message: message })
             } else {
-                let message = user.name + " hat den falschen Ort(" + ort + ") gerraten! (Richtig wäre " + room.ort + ")";
+                let message = user.name + " hat den falschen Ort(" + ort + ") gerraten! (Richtig wäre" + room.ort + ")";
                 dispatch("win", { room: room, message: message })
             }
         },
@@ -77,18 +62,18 @@ export default
         },
         start({ dispatch, rootState }, { room }) {
             let roles = {};
-            let place = places[Math.floor(Math.random() * places.length)];
-            let spy = rootState.games.members[Math.floor(Math.random() * rootState.games.members.length)]
+
+            let wolf = rootState.games.members[Math.floor(Math.random() * rootState.games.members.length)]
                 .uid;
 
-            room.ort = place;
             for (let member of rootState.games.members) {
-                roles[member.uid] = { accuse: [], role: "kein Spion" };
-                if (member.uid == spy) {
-                    roles[member.uid] = { role: "Spion", accuse: [] };
+                roles[member.uid] = { role: "Schaf" };
+                if (member.uid == wolf) {
+                    roles[member.uid] = { role: "Wolf" };
                 }
             }
 
             dispatch("games/startGame", { room: room, roles: roles }, { root: true })
         },
     }
+
