@@ -7,7 +7,7 @@
         <span v-if="room.start">
           <span
             @click="accuse(member.uid)"
-            v-if="room.game == 'spyfall' && member.uid != user.uid"
+            v-if="member.uid != user.uid"
             class="btn mini danger"
           >
             <span v-if="room.roles[member.uid].accuse.indexOf(user.uid) == -1"

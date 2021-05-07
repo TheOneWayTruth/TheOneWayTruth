@@ -5,7 +5,7 @@
       class="kiste"
       :key="room.id"
       v-for="room in rooms"
-      :disabled="room.start"
+      :disabled="disabled(room)"
     >
       <span>{{ room.name }}</span>
       <span v-show="room.start"> (bereits im Spiel)</span>
@@ -25,6 +25,7 @@ export default {
     ...mapState("games", ["rooms"]),
     ...mapState("account", ["user"]),
   },
+
   created() {
     roomCollection.orderBy("id", "desc").onSnapshot((doc) => {
       let roomArray = [];
@@ -49,6 +50,9 @@ export default {
     }, 500); */
   },
   methods: {
+    disabled(room) {
+      return room.start;
+    },
     createRoom() {
       let room = {};
       room.id = (+new Date()).toString();

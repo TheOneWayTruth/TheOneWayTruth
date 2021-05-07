@@ -7,14 +7,14 @@
         <h4>Players</h4>
         <p :key="member.uid" v-for="member in members">
           <span>{{ member.name }}</span>
-          <span v-if="room.host.uid == member.uid">(host)</span>
+          <span v-if="room.host && room.host.uid == member.uid">(host)</span>
         </p>
       </div>
     </div>
-
     <Spyfall v-else-if="room.game == 'spyfall'" />
-    <div v-if="admin">
-      <div v-if="!room.start">
+    <Schaefchen v-else-if="room.game == 'schaefchen'" />
+    <div v-if="admin" class="flexy">
+      <div v-if="!room.start" class="flexy">
         <h3>Game:</h3>
         <button
           @click="selectGame(game.id)"
@@ -26,12 +26,20 @@
           {{ game.name }}
         </button>
       </div>
+      <div v-show="room.game == 'schaefchen' && !room.start">
+        <h3>Timer:</h3>
+        <input v-model="timer" type="number" />
+      </div>
       <h3>Server:</h3>
-      <button v-if="!room.start" @click="deleteRoom" class="btn danger">
-        Löschen
-      </button>
-      <button v-if="!room.start" @click="startGame" class="btn">Starten</button>
-      <button v-else @click="stop" class="btn">Stop</button>
+      <div class="flexy">
+        <button v-if="!room.start" @click="deleteRoom" class="btn danger">
+          Löschen
+        </button>
+        <button v-if="!room.start" @click="startGame" class="btn">
+          Starten
+        </button>
+        <button v-else @click="stop" class="btn">Stop</button>
+      </div>
       <span v-show="members.length < 3"
         >Mindestens 3 Spieler zum starten erforderlich</span
       >
@@ -47,6 +55,7 @@ import { mapState } from "vuex";
 import { roomCollection, usersCollection } from "../firebase";
 import games from "@/assets/games.json";
 import Spyfall from "@/components/Spyfall";
+import Schaefchen from "../components/Schaefchen.vue";
 
 export default {
   name: "Game",
@@ -57,6 +66,7 @@ export default {
     return {
       games: games,
       changing: false,
+      timer: 60,
     };
   },
   computed: {
@@ -65,6 +75,7 @@ export default {
   },
   components: {
     Spyfall,
+    Schaefchen,
   },
   created() {
     roomCollection.doc(this.id).onSnapshot((doc) => {
@@ -128,6 +139,7 @@ export default {
       });
     },
     startGame() {
+      this.room.timer = this.timer;
       this.$store.dispatch("games/" + this.room.game + "/start", {
         room: this.room,
       });

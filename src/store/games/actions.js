@@ -16,7 +16,9 @@ export default
             fb.roomCollection.doc(room.id).set({ game: game }, { merge: true })
         },
         startGame({ dispatch }, { room: room, roles: roles }) {
-            fb.roomCollection.doc(room.id).set({ start: true, roles: roles, ort: room.ort }, { merge: true })
+            room.start = true;
+            room.roles = roles;
+            fb.roomCollection.doc(room.id).set(room, { merge: true })
         },
         stopGame({ dispatch }, { room: room }) {
             fb.roomCollection.doc(room.id).set({ win: null, start: false, roles: {} }, { merge: true })

@@ -194,19 +194,6 @@ input {
 [v-cloak] {
   display: none;
 }
-
-.fade-enter-active {
-  transition: opacity 0.5s;
-}
-
-.fade-leave-active {
-  transition: opacity 0s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>
 
 
